@@ -1,5 +1,5 @@
-#download-songs-python
+# download-songs-python
 This script would download the song for you whichever name you enter (assuming that it is available on youtube and ranks top when searched with youtube keyword)
 Just fulfill the pip requirements given in requirements.txt and run the script. Enter the name of song and automatic processing would be done. Make sure that you have active Internet Connection otherwise the script may fail.Then it would ask you the quality of song. Choose the desired number and press enter. Then, it would prompt you to either download automatically, or in your browser.Press enter to download automatically (would be found in the folder in which you have placed the script) or press b to open the download link with browser. If you press any other character than b, then it would switch to default mode that is download automatically.
-#Disclaimer
+# Disclaimer
 This script does not promote the downloading of copyright content. This is solely for educational purposes for learning web scrapping by python. I am not responsible for any piracy.
