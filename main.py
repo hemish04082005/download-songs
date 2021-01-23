@@ -1,7 +1,16 @@
+# imports
 import webbrowser
 import requests #pip install requests
-from bs4 import BeautifulSoup #pip install bs4
+import sys
+import time
+import os
 from requests import get
+from bs4 import BeautifulSoup #pip install bs4
+from tkinter import Tk # Most standard python for windows installations include tkinter. You may have to install them on many linux distros and macs.
+#----------------------------------------------
+
+
+# removed dependency of googlesearch-python by implementing its code here
 def search(term, num_results=10, lang="en"):
     usr_agent = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -28,23 +37,29 @@ def search(term, num_results=10, lang="en"):
 
     html = fetch_results(term, num_results, lang)
     return list(parse_results(html))
-print("")
-print("Enter the name of song: ")
-inputquery = input()
-listoflinks = search(str(inputquery + " youtube"), num_results = 7)
-linkofsong = listoflinks[0] #I needed only first indice but queried 7 results in above line
-print("")
-print(linkofsong)
-apisite = "https://y1.youtube-to-mp3.org/searchdl.php"
-payload = {"url": linkofsong,
-"type": "mp3"}
-postrequest = requests.post(apisite, data = payload)
-responsehtml = postrequest.text
-bs = BeautifulSoup(responsehtml, 'html.parser')
-table = bs.find(lambda tag: tag.name=='table' and tag.has_attr('id') and tag['id']=="tab_mp3") 
-rows = table.findAll(lambda tag: tag.name=='tr')
+# -------------googlesearch-python implementation end----------------
+
+
+
+#Check whether internet connection is present or not
+print("Checking Internet Connection...")
+time.sleep(0.5)
+url = "http://www.google.com"
+timeout = 5
+try:
+    request = requests.get(url, timeout=timeout)
+    print("Connected to the Internet")
+    time.sleep(0.5)
+except (requests.ConnectionError, requests.Timeout) as exception:
+    print("No internet connection.")
+    time.sleep(0.5)
+    sys.exit()
+#------------------------------------
+
+
+print("Quality Levels:")
+time.sleep(0.5)
 print('''
-Quality Levels
 1: Very High
 2: High
 3: Medium
@@ -53,22 +68,76 @@ Quality Levels
 ''')
 print("Enter the quality level:")
 qualitylevel = input()
-for y in [1,2,3,4,5]:
-	if str(y) == str(qualitylevel):
-		myrequirment = rows[y]
-print("")
-myrequirement = str(myrequirment) #This part is the funniest one!
-hrefstring = myrequirement.find('href="') #First used beautiful soup to parse the table but then using simple string find methods! I should do it in bs4 itself!
-requiredhrefstartstring = str((int(hrefstring) + 6))
-requiredhrefstopstring = (int(myrequirement.find('" onclick="ads()"'))) #yes that apisite has ads which popup when you click the download button!
-finallink = (myrequirement[int(requiredhrefstartstring):int(requiredhrefstopstring)])
-print('''To download with python, press Enter (Default mode)
-To download with your default browser, press b and enter.
-If you enter any random character then, it would switch to default mode.''')
-browserorpython = input(">")
-if browserorpython != "b":
-	print("Downloading...")
-	downloadrequest = requests.get(finallink, allow_redirects=True)
-	open((inputquery+".mp3"), 'wb').write(downloadrequest.content)
-if browserorpython == "b" or browserorpython == "B":
-	webbrowser.open(finallink)
+if os.path.exists("songs.txt"):
+    file = open("songs.txt", "rt")
+    filelocation = "songs.txt"
+if not os.path.exists("songs.txt"):
+    time.sleep(0.4)
+    print("")
+    print("songs.txt not found. Please select the text file manually which contains list of songs.")
+    from tkinter.filedialog import askopenfilename
+    Tk().withdraw()
+    templocation = askopenfilename()
+    filelocation = str(templocation)
+    file = open((str(filelocation)), "rt")
+Counter = 0
+Content = file.read() 
+CoList = Content.split("\n")
+for i in CoList: 
+    if i: 
+        Counter += 1
+Counter += 1
+iterationNo= 1
+file.seek(0)
+while iterationNo < Counter:
+    try:
+        inputquery = file.readline()
+        inputquery = inputquery.rstrip()
+        if inputquery == "":
+            continue
+        listoflinks = search(str(inputquery + " song" + " youtube"), num_results=7)
+        linkofsong = listoflinks[0]
+        print(inputquery)
+        print(linkofsong)
+        apisite = "https://y1.youtube-to-mp3.org/searchdl.php"
+        payload = {"url": linkofsong,
+        "type": "mp3"}
+        postrequest = requests.post(apisite, data = payload)
+        responsehtml = postrequest.text
+        bs = BeautifulSoup(responsehtml, 'html.parser')
+        table = bs.find(lambda tag: tag.name=='table' and tag.has_attr('id') and tag['id']=="tab_mp3") 
+        rows = table.findAll(lambda tag: tag.name=='tr')
+        for y in [1,2,3,4,5]:
+            if str(y) == str(qualitylevel):
+                myrequirement = str(rows[y])
+        hrefstring = myrequirement.find('href="')
+        requiredhrefstartstring = str((int(hrefstring) + 6))
+        requiredhrefstopstring = (int(myrequirement.find('" onclick="ads()"')))
+        finallink = (myrequirement[int(requiredhrefstartstring):int(requiredhrefstopstring)])
+        print("Downloading...")
+        downloadrequest = requests.get(finallink, allow_redirects=True)
+        open((inputquery+".mp3"), 'wb').write(downloadrequest.content)
+        iterationNo += 1
+    except:
+        tempfile = open("templog.txt", "a")
+        print("Failed")
+        tempfile.write(inputquery+"\n")
+        tempfile.close()
+        iterationNo += 1
+print("If any download has failed, the name is stored in templog.txt")
+file.close()
+print("Do you want to empty songs.txt so that next time you run the code, it does not pickup the previous songs? Type y for yes or n for no and then press enter.")
+def takeinputYesOrNo():
+    yesorno = input(">>")
+    global temporaryboolean
+    if yesorno != "y" and yesorno != "n" and yesorno != "Y" and yesorno != "N":
+        print("Sorry write correct input")
+        takeinputYesOrNo()
+    if yesorno == "y" or yesorno == "Y":
+        temporaryboolean = True
+    if yesorno == "n" or yesorno == "N":
+        temporaryboolean = False
+takeinputYesOrNo()
+if temporaryboolean == True:
+    with open(filelocation, "wt") as filetobecleared:
+        filetobecleared.write("")
