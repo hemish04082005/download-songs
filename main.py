@@ -55,7 +55,7 @@ except (requests.ConnectionError, requests.Timeout) as exception:
     time.sleep(0.5)
     sys.exit()
 #------------------------------------
-
+temporaryboolean = None
 
 print("Quality Levels:")
 time.sleep(0.5)
