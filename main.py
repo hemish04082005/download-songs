@@ -5,7 +5,11 @@ import time
 import os
 from requests import get
 from bs4 import BeautifulSoup #pip install bs4
+
+# ---------should be removed for android termux-start------------
 from tkinter import Tk # Most standard python for windows installations include tkinter. You may have to install them on many linux distros and macs.
+# ---------should be removed for android termux-end------------
+
 #----------------------------------------------
 
 
@@ -70,6 +74,8 @@ qualitylevel = input()
 if os.path.exists("songs.txt"):
     file = open("songs.txt", "rt")
     filelocation = "songs.txt"
+
+# ---------should be removed for android termux-start------------
 if not os.path.exists("songs.txt"):
     time.sleep(0.4)
     print("")
@@ -79,6 +85,8 @@ if not os.path.exists("songs.txt"):
     templocation = askopenfilename()
     filelocation = str(templocation)
     file = open((str(filelocation)), "rt")
+# ---------should be removed for android termux-end------------
+
 Counter = 0
 Content = file.read() 
 CoList = Content.split("\n")
