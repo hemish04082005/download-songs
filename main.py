@@ -1,5 +1,4 @@
 # imports
-import webbrowser
 import requests #pip install requests
 import sys
 import time
