@@ -9,9 +9,6 @@ Just fulfill the pip requirements given in requirements.txt and run the script (
 
 # Extra information for Android Termux Environment
 If you are running this in android termux environment, you should remove code started with comments (there are two places in where such comments are there, just copy this text and find) |# ---------should be removed for android termux-start------------| and ending with |# ---------should be removed for android termux-end------------| as tkinter is not supported for Android Termux. So, the result would be that if you don't place songs.txt in same folder, the script would not work and thus would exit itself and it would not ask you to specify the location by selection as in the case of windows or linux or mac.
-The arm64 binary is meant to be run in Android Termux environment and is not tested for any desktop linux. The binary would not ask you to give the location of songs.txt as tkinter is not provided in Termux environment. You should be careful and 
-To run the binary, open the terminal in directory containing the downloaded binary and run the binary like this:
-./download-songs-termux
 
 # Instructions for running release binaries
 The release binaries provided are packaged throught pyinstaller module.
