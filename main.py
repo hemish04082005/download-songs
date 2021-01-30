@@ -126,7 +126,7 @@ while iterationNo < Counter:
         open((inputquery+".mp3"), 'wb').write(downloadrequest.content)
         iterationNo += 1
     except:
-        tempfile = open("templog.txt", "a")
+        tempfile = open("failedtemp.txt", "a")
         print("Failed")
         tempfile.write(inputquery+"\n")
         tempfile.close()
