@@ -131,7 +131,7 @@ while iterationNo < Counter:
         tempfile.write(inputquery+"\n")
         tempfile.close()
         iterationNo += 1
-print("If any download has failed, the name is stored in templog.txt")
+print("If any download has failed, the name is stored in failedtemp.txt")
 file.close()
 print("Do you want to empty songs.txt so that next time you run the code, it does not pickup the previous songs? Type y for yes or n for no and then press enter.")
 def takeinputYesOrNo():
