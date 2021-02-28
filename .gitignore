@@ -1,3 +1,4 @@
 *.mp3
 failedtemp.txt
 songs.txt
+__pycache__
